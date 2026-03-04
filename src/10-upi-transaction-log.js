@@ -48,4 +48,83 @@
  */
 export function analyzeUPITransactions(transactions) {
   // Your code here
+  if (!Array.isArray(transactions) || transactions.length === 0) return null;
+
+  const validTransactions = transactions.filter((t) => {
+    return (
+      t &&
+      typeof t === "object" &&
+      typeof t.amount === "number" &&
+      t.amount > 0 &&
+      (t.type === "credit" || t.type === "debit")
+    );
+  });
+
+  if (validTransactions.length === 0) return null;
+
+  const totalCredit = validTransactions
+    .filter((i) => i.type === "credit")
+    .reduce((sum, am) => sum + am.amount, 0);
+
+  const totalDebit = validTransactions
+    .filter((i) => i.type === "debit")
+    .reduce((sum, am) => sum + am.amount, 0);
+
+  const netBalance = totalCredit - totalDebit;
+  const transactionCount = validTransactions.length;
+
+  const sumOfAllValidAmounts = validTransactions
+    .map((am) => am.amount)
+    .reduce((sum, am) => sum + am, 0);
+
+  const avgTransaction = Math.round(sumOfAllValidAmounts / transactionCount);
+
+  const highestTransaction = validTransactions
+    .sort((a, b) => a.amount - b.amount)
+    .findLast((a) => a.amount);
+
+  // Category breakdown
+  const categoryBreakdown = validTransactions.reduce((acc, t) => {
+    if (!acc[t.category]) {
+      acc[t.category] = 0;
+    }
+    acc[t.category] += t.amount;
+    return acc;
+  }, {});
+
+  // Frequent contact
+  let frequentContact = null;
+  let highestCount = 0;
+
+  for (let i = 0; i < validTransactions.length; i++) {
+    let currentName = validTransactions[i].to;
+
+    let count = 0;
+    for (let j = 0; j < validTransactions.length; j++) {
+      if (validTransactions[j].to === currentName) {
+        count++;
+      }
+    }
+
+    if (count > highestCount) {
+      highestCount = count;
+      frequentContact = currentName;
+    }
+  }
+
+  const allAbove100 = validTransactions.every((amount) => amount.amount > 100);
+  const hasLargeTransaction = validTransactions.some((am) => am.amount >= 5000);
+
+  return {
+    totalCredit,
+    totalDebit,
+    netBalance,
+    transactionCount,
+    avgTransaction,
+    highestTransaction,
+    categoryBreakdown,
+    frequentContact,
+    allAbove100,
+    hasLargeTransaction,
+  };
 }

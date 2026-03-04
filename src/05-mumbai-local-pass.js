@@ -43,4 +43,59 @@
  */
 export function generateLocalPass(passenger) {
   // Your code here
+  if (typeof passenger !== "object" || passenger === null) {
+    return "INVALID PASS";
+  }
+
+  if (passenger.name === undefined) return "INVALID PASS";
+  if (passenger.from === undefined) return "INVALID PASS";
+  if (passenger.to === undefined) return "INVALID PASS";
+  if (passenger.classType === undefined) return "INVALID PASS";
+
+  if (typeof passenger.name !== "string" || !(passenger.name.length > 0)) {
+    return "INVALID PASS";
+  }
+  if (typeof passenger.from !== "string" || !(passenger.from.length > 0)) {
+    return "INVALID PASS";
+  }
+  if (typeof passenger.to !== "string" || !(passenger.to.length > 0)) {
+    return "INVALID PASS";
+  }
+  if (typeof passenger.classType !== "string" || !(passenger.classType.length > 0)) {
+    return "INVALID PASS";
+  }
+  
+  const lowerCaseClass = passenger.classType.toLowerCase();
+  if (!(lowerCaseClass === "first" || lowerCaseClass === "second")) {
+    return "INVALID PASS";
+  }
+
+  // Pass ID code
+  const classTypeFirstLetter = lowerCaseClass.charAt(0).toUpperCase();
+
+  const fromField = passenger.from;
+  let fromFieldFirstThreeLaters = fromField.slice(0, 3);
+  
+  const toField = passenger.to;
+  let toFieldFirstThreeLaters = toField.slice(0, 3);
+
+  let PASSID = classTypeFirstLetter + fromFieldFirstThreeLaters + toFieldFirstThreeLaters;
+  const uppeerCasePASSID = PASSID.toUpperCase();
+
+  // formating
+  let name = passenger.name;
+  const upeercaseName = name.toUpperCase();
+
+  let from = passenger.from;
+  const lowercaseFrom = from.toLowerCase();
+  const fromTitleCase = lowercaseFrom.charAt(0).toUpperCase() + lowercaseFrom.slice(1, from.length);
+
+  let to = passenger.to;
+  const toLowerCase = to.toLowerCase();
+  const toTitleCase = toLowerCase.charAt(0).toUpperCase() + toLowerCase.slice(1, to.length);
+  
+  let classType = passenger.classType;
+  const upperCaseclassType = classType.toUpperCase();
+
+  return `MUMBAI LOCAL PASS\n---\nName: ${upeercaseName}\nFrom: ${fromTitleCase}\nTo: ${toTitleCase}\nClass: ${upperCaseclassType}\nPass ID: ${uppeerCasePASSID}`
 }

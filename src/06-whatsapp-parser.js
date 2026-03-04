@@ -40,4 +40,33 @@
  */
 export function parseWhatsAppMessage(message) {
   // Your code here
+  if (typeof message !== "string") return null;
+  if (!message.includes(" - ")) return null;
+
+  const senderMessageStr = message.substring(20);
+  if (!senderMessageStr.includes(": ")) return null;
+
+  // message extraction
+  const date = message.substring(0, 12-2);
+  const time = message.substring(12, 20-3);
+  const searchIndex = message.indexOf(": ");
+  const sender = message.substring(20, searchIndex);
+  const text = message.substring(searchIndex + 2).trim();
+  const words = text.split(/\s+/);
+  const wordCount = words.length;
+
+  let sentiment;
+  if (text.includes("😂") || text.includes(":)") || /haha/i.test(text)) {
+    sentiment = "funny";
+  } else if (
+    text.includes("❤") ||
+    /love/i.test(text) ||
+    /pyaar/i.test(text)
+  ) {
+    sentiment = "love";
+  } else {
+    sentiment = "neutral";
+  }
+
+  return { date, time, sender, text, wordCount, sentiment };
 }
